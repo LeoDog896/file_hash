@@ -1,11 +1,15 @@
 export async function hashFromFile(file: string) {
-  const a = await crypto.subtle.digest(
-    "SHA-512",
-    await Deno.readFile(file),
-  );
+  return hashFromContent(await Deno.readFile(file));
+}
 
-  // get hex string from ArrayBuffer
-  return Array.from(new Uint8Array(a))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+export async function hashFromContent(content: Uint8Array | undefined) {
+    const a = await crypto.subtle.digest(
+        "SHA-512",
+        content ?? new Uint8Array(),
+    );
+    
+    // get hex string from ArrayBuffer
+    return Array.from(new Uint8Array(a))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
 }
